@@ -34,6 +34,21 @@
   - `System.IO`.
   - `System.Threading.Tasks`.
 
+## Тестирование
+
+Для проверки корректности реализованы модульные тесты в проекте `Lab01.Tests`
+(NUnit). Тесты проверяют:
+
+- вычисление `FullName` и `IsAdult` в классе `Person`;
+- валидацию `Email`;
+- сериализацию/десериализацию `Person` и работу с файлами.
+
+Запуск тестов:
+
+```bash
+cd lab01
+dotnet test Lab01.Tests/Lab01.Tests.csproj
+
 ## Инструкция по запуску
 
 ```bash

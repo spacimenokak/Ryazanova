@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-users-table" author="system">
+        <createTable tableName="Users">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PasswordHash" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FirstName" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastName" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PhoneNumber" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Role" type="VARCHAR(50)" defaultValue="User">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedAt" type="TIMESTAMP"/>
+        </createTable>
+        <createIndex indexName="IX_Users_Email" tableName="Users">
+            <column name="Email"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="002-create-instructors-table" author="system">
+        <createTable tableName="Instructors">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="FirstName" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LastName" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PhoneNumber" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Specialization" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ExperienceYears" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedAt" type="TIMESTAMP"/>
+        </createTable>
+        <createIndex indexName="IX_Instructors_Email" tableName="Instructors">
+            <column name="Email"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="003-create-classes-table" author="system">
+        <createTable tableName="Classes">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Description" type="TEXT"/>
+            <column name="StartTime" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EndTime" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MaxParticipants" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CurrentParticipants" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="InstructorId" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedAt" type="TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="Classes"
+            baseColumnNames="InstructorId"
+            constraintName="FK_Classes_Instructors"
+            referencedTableName="Instructors"
+            referencedColumnNames="Id"
+            onDelete="RESTRICT"/>
+        <createIndex indexName="IX_Classes_InstructorId" tableName="Classes">
+            <column name="InstructorId"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="004-create-bookings-table" author="system">
+        <createTable tableName="Bookings">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="UserId" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ClassId" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BookingDate" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Status" type="VARCHAR(50)" defaultValue="Active">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedAt" type="TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="Bookings"
+            baseColumnNames="UserId"
+            constraintName="FK_Bookings_Users"
+            referencedTableName="Users"
+            referencedColumnNames="Id"
+            onDelete="RESTRICT"/>
+        <addForeignKeyConstraint
+            baseTableName="Bookings"
+            baseColumnNames="ClassId"
+            constraintName="FK_Bookings_Classes"
+            referencedTableName="Classes"
+            referencedColumnNames="Id"
+            onDelete="RESTRICT"/>
+        <createIndex indexName="IX_Bookings_UserId" tableName="Bookings">
+            <column name="UserId"/>
+        </createIndex>
+        <createIndex indexName="IX_Bookings_ClassId" tableName="Bookings">
+            <column name="ClassId"/>
+        </createIndex>
+        <createIndex indexName="IX_Bookings_User_Class" tableName="Bookings" unique="true">
+            <column name="UserId"/>
+            <column name="ClassId"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-create-subscriptions-table" author="system">
+        <createTable tableName="Subscriptions">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="UserId" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="Price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="StartDate" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EndDate" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IsActive" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UpdatedAt" type="TIMESTAMP"/>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="Subscriptions"
+            baseColumnNames="UserId"
+            constraintName="FK_Subscriptions_Users"
+            referencedTableName="Users"
+            referencedColumnNames="Id"
+            onDelete="RESTRICT"/>
+        <createIndex indexName="IX_Subscriptions_UserId" tableName="Subscriptions">
+            <column name="UserId"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="006-create-apikeys-table" author="system">
+        <createTable tableName="ApiKeys">
+            <column name="Id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="Key" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="Name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CreatedAt" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ExpiresAt" type="TIMESTAMP"/>
+            <column name="IsActive" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="IX_ApiKeys_Key" tableName="ApiKeys">
+            <column name="Key"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,12 @@
+﻿{
+  "FirstName": "Anna",
+  "LastName": "Ryazanova",
+  "Age": 21,
+  "personId": "6f567acb-7a45-49aa-9018-5bc499422f0d",
+  "BirthDate": "2004-05-01T00:00:00",
+  "Email": "anna@example.com",
+  "phone": "\u002B7-900-000-00-00",
+  "FullName": "Anna Ryazanova",
+  "IsAdult": true,
+  "_birthDate": "2004-05-01T00:00:00"
+}
